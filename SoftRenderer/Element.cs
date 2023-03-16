@@ -103,12 +103,25 @@ public class Element
                 InVertex.Position = OutT1.Position * uv.X + OutT2.Position * uv.Y + OutT3.Position * uv.Z;
                 InVertex.Color = OutT1.Color * uv.X + OutT2.Color * uv.Y + OutT3.Color * uv.Z;
                 InVertex.Coord = OutT1.Coord * uv.X + OutT2.Coord * uv.Y + OutT3.Coord * uv.Z;
-                var Color = Shader.FragmentShader(InVertex);
                 var Depth = ((-1 * InVertex.Position.Z) + 1) / 2;
+                var Color = Shader.FragmentShader(InVertex);
                 // 深度测试
                 if (Depth <= renderer.DepthBuffer[x, y] || renderer.DepthBuffer[x, y] == -1)
                 {
-                    renderer.ColorBuffer[x, y] = Color;
+                    var NewColor = new Vector4
+                    {
+                        X = Color.X * Color.W,
+                        Y = Color.Y * Color.W,
+                        Z = Color.Z * Color.W
+                    };
+                    var SourceColor = new Vector4
+                    {
+                        X = renderer.ColorBuffer[x, y].X * (1 - Color.W),
+                        Y = renderer.ColorBuffer[x, y].Y * (1 - Color.W),
+                        Z = renderer.ColorBuffer[x, y].Z * (1 - Color.W)
+                    };
+                    renderer.ColorBuffer[x, y] = NewColor + SourceColor;
+                    renderer.ColorBuffer[x, y].W = 1;
                     renderer.DepthBuffer[x, y] = Depth;
                 }
 

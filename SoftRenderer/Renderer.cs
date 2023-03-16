@@ -7,9 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SoftRenderer;
-
+public enum ClearFlag
+{
+    Color = (1 << 0),
+    Depth = (1 << 1),
+}
 public class Renderer
 {
+
     public Point Size;
     public Renderer(int x, int y)
     {
@@ -22,9 +27,52 @@ public class Renderer
                 DepthBuffer[i, j] = 1;
             }
         }
+        for (int i = 0; i < x; i++)
+        {
+            for (int j = 0; j < y; j++)
+            {
+                ColorBuffer[i, j] = new Vector4(0, 0, 0, 1);
+            }
+        }
         Size.X = x;
         Size.Y = y;
     }
+
+    public Color ClearColor { get; set; }
+    public void Clear(ClearFlag ClearFlag)
+    {
+
+        if ((ClearFlag | ClearFlag.Color) == ClearFlag.Color)
+        {
+            Vector4 vector = new Vector4
+            {
+                X = ClearColor.R / 255.0F,
+                Y = ClearColor.G / 255.0F,
+                Z = ClearColor.B / 255.0F,
+                W = ClearColor.A / 255.0F,
+
+            };
+            for (int i = 0; i < Size.X; i++)
+            {
+                for (int j = 0; j < Size.Y; j++)
+                {
+                    ColorBuffer[i, j] = vector;
+                }
+            }
+        }
+        if ((ClearFlag | ClearFlag.Depth) == ClearFlag.Depth)
+        {
+            for (int i = 0; i < Size.X; i++)
+            {
+                for (int j = 0; j < Size.Y; j++)
+                {
+                    DepthBuffer[i, j] = 1;
+                }
+            }
+        }
+    }
+
+    
     public Vector4[,] ColorBuffer { get; set; }
     public float[,] DepthBuffer { get; set; }
     public Element CreateElement()
