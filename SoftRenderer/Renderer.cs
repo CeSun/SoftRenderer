@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Avalonia.Media;
+using SoftRenderer.View;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -57,6 +58,7 @@ public class Renderer
                 for (int j = 0; j < Size.Y; j++)
                 {
                     ColorBuffer[i, j] = vector;
+                    SetColor(i, j, vector);
                 }
             }
         }
@@ -80,36 +82,39 @@ public class Renderer
         return new Element(this);
     }
 
-    public void OutPutToFile(string filename)
+    public void SetColor(int x, int y, Vector4 Color)
+    {
+        SetColor_Window(x, y, Color);
+        SetColor_Buffer(x, y, Color);
+    }
+
+    public Vector4 GetColor(int x, int y)
+    {
+        return ColorBuffer[x, y];
+    }
+    private void SetColor_Buffer(int x, int y, Vector4 Color)
+    {
+        ColorBuffer[x, y] = Color;
+    }
+
+    private void SetColor_Window(int x, int y, Vector4 color)
+    {
+        RenderWindow.Instance.SetPixel(x, y, Color.FromArgb((byte)(color.W * 255), (byte)(color.X * 255), (byte)(color.Y * 255), (byte)(color.Z * 255)));
+    }
+    public void OutPutBuffer()
     {
 
-        Bitmap image = new Bitmap(Size.X, Size.Y);
-
-        for (int x = 0; x < Size.X; x ++)
-        {
-            for(int y = 0; y < Size.Y; y ++)
-            {
-                var color = ColorBuffer[x, y];
-                image.SetPixel(x, y, Color.FromArgb((int)(color.W * 255), (int)(color.X * 255), (int)(color.Y * 255), (int)(color.Z * 255)));
-            }
-        }
-
-        image.Save(filename);
 
         for (int x = 0; x < Size.X; x++)
         {
             for (int y = 0; y < Size.Y; y++)
             {
-                var depth = DepthBuffer[x, y];
-                image.SetPixel(x, y, Color.FromArgb(255, (int)(depth * 255), (int)(depth * 255), (int)(depth * 255)));
+                var color = ColorBuffer[x, y];
+                RenderWindow.Instance.SetPixel(x, y, Color.FromArgb((byte)(color.W * 255), (byte)(color.X * 255), (byte)(color.Y * 255), (byte)(color.Z * 255)));
             }
         }
-        var strs = filename.Split('.');
 
-        filename = strs[0] + "_d." + strs[1];
-        image.Save(filename);
     }
-
 
 
 }

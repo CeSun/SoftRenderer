@@ -116,12 +116,13 @@ public class Element
                     };
                     var SourceColor = new Vector4
                     {
-                        X = renderer.ColorBuffer[x, y].X * (1 - Color.W),
-                        Y = renderer.ColorBuffer[x, y].Y * (1 - Color.W),
-                        Z = renderer.ColorBuffer[x, y].Z * (1 - Color.W)
+                        X = renderer.GetColor(x, y).X * (1 - Color.W),
+                        Y = renderer.GetColor(x, y).Y * (1 - Color.W),
+                        Z = renderer.GetColor(x, y).Z * (1 - Color.W)
                     };
-                    renderer.ColorBuffer[x, y] = NewColor + SourceColor;
-                    renderer.ColorBuffer[x, y].W = 1;
+                    var color = NewColor + SourceColor;
+                    color.W = 1;
+                    renderer.SetColor(x, y, color);
                     renderer.DepthBuffer[x, y] = Depth;
                 }
 
