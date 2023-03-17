@@ -15,7 +15,7 @@ public enum ClearFlag
 }
 public class Renderer
 {
-
+    public Texture[] Textures = new Texture[10];
     public Point Size;
     public Renderer(int x, int y)
     {

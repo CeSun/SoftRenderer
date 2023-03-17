@@ -22,6 +22,10 @@ public class Element
         {
             Shader = new Shader();
         }
+        if (Shader.renderer == null)
+        {
+            Shader.renderer = renderer;
+        }
 
         List<OutVertex> OutVertices = new List<OutVertex>();
         foreach(var vertex in Vertices)
@@ -42,7 +46,7 @@ public class Element
     {
         // 背面剔除
         var normal = Vector3.Cross(T2.Position - T1.Position, T3.Position - T1.Position);
-        if (normal.Z <= 0)
+        if (normal.Z >= 0)
             return;
         // 标准空间外剔除
         if (T1.Position.X < -1 && T2.Position.X < -1 && T3.Position.X < -1)

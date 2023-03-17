@@ -13,7 +13,7 @@ public class RenderWindow
     public event Action? Init;
     public event Action? Closing;
     public event Action<float>? Render;
-
+    Renderer renderer;
     internal static RenderWindow? _Instance;
 
     internal Action<int , int , Color>? Print;
@@ -53,9 +53,10 @@ public class RenderWindow
     {
         Init?.Invoke();
     }
-    public void Run(int width, int height)
+    public void Run(Renderer renderer)
     {
-        this.Size = new Point(width, height);
+        this.renderer = renderer;
+        this.Size = new Point(renderer.Size.X, renderer.Size.Y);
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(new string[] { });
     }
     AppBuilder BuildAvaloniaApp()
